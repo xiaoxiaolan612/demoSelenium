@@ -12,6 +12,12 @@ public class SeleniumTest {
     public WebDriver driver;
     public WebDriverWait wait;
 
+    public String usernameXpath = "//input[@name='username']";
+    public String passwordXpath = "//input[@name='password']";
+    public String loginButtonXpath = "//button[@type='submit']";
+
+    public String errorMessageXpath = "//span[contains(@class,'error-message') and text()='Required']";
+
     @Before
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe");
@@ -23,9 +29,9 @@ public class SeleniumTest {
 
     @Test
     public void testSuccessfulLogin() {
-        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='username']")));
-        WebElement passwordField = driver.findElement(By.xpath("//input[@name='password']"));
-        WebElement loginButton = driver.findElement(By.xpath("//button[@type='submit']"));
+        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(usernameXpath)));
+        WebElement passwordField = driver.findElement(By.xpath(passwordXpath));
+        WebElement loginButton = driver.findElement(By.xpath(loginButtonXpath));
 
         usernameField.sendKeys("Admin");
         passwordField.sendKeys("admin123");
@@ -39,49 +45,49 @@ public class SeleniumTest {
 
     @Test
     public void testMissingUsername() {
-        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='password']")));
-        WebElement loginButton = driver.findElement(By.xpath("//button[@type='submit']"));
+        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(passwordXpath)));
+        WebElement loginButton = driver.findElement(By.xpath(loginButtonXpath));
 
         passwordField.sendKeys("admin123");
         loginButton.click();
 
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message' and text()='Required']")));
+        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(errorMessageXpath)));
         System.out.println("Thông báo lỗi có hiện: " + (errorMessage != null && errorMessage.isDisplayed()));
         assertTrue("Thông báo lỗi không hiện", errorMessage.isDisplayed());
     }
 
     @Test
     public void testMissingPassword() {
-        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='username']")));
-        WebElement loginButton = driver.findElement(By.xpath("//button[@type='submit']"));
+        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(usernameXpath)));
+        WebElement loginButton = driver.findElement(By.xpath(loginButtonXpath));
 
         usernameField.sendKeys("Admin");
         loginButton.click();
 
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message' and text()='Required']")));
+        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(errorMessageXpath)));
         System.out.println("Thông báo lỗi có hiện: " + (errorMessage != null && errorMessage.isDisplayed()));
         assertTrue("Thông báo lỗi không hiện", errorMessage.isDisplayed());
     }
 
     @Test
     public void testMissingUsernameAndPassword() {
-        WebElement loginButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@type='submit']")));
+        WebElement loginButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(loginButtonXpath)));
         loginButton.click();
 
-        WebElement usernameErrorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message' and text()='Required']")));
+        WebElement usernameErrorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(errorMessageXpath)));
         System.out.println("Thông báo lỗi tên người dùng: " + (usernameErrorMessage != null && usernameErrorMessage.isDisplayed()));
         assertTrue("Thông báo lỗi tên người dùng", usernameErrorMessage.isDisplayed());
 
-        WebElement passwordErrorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message' and text()='Required']")));
+        WebElement passwordErrorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(errorMessageXpath)));
         System.out.println("Thông báo lỗi mật khẩu: " + (passwordErrorMessage != null && passwordErrorMessage.isDisplayed()));
         assertTrue("Thông báo lỗi mật khẩu", passwordErrorMessage.isDisplayed());
     }
 
     @Test
     public void testFailedLogin() {
-        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='username']")));
-        WebElement passwordField = driver.findElement(By.xpath("//input[@name='password']"));
-        WebElement loginButton = driver.findElement(By.xpath("//button[@type='submit']"));
+        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(usernameXpath)));
+        WebElement passwordField = driver.findElement(By.xpath(passwordXpath));
+        WebElement loginButton = driver.findElement(By.xpath(loginButtonXpath));
 
         usernameField.sendKeys("abc");
         passwordField.sendKeys("xyz");
