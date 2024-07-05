@@ -24,6 +24,7 @@ public class SearchSelection {
         driver.manage().window().maximize();
         driver.get("https://semantic-ui.com/modules/dropdown.html");
         String dropdownXpath = "//div[@class='ui fluid search selection dropdown']";
+        String dropdownAfterXpath = "//div[@class='menu transition visible']";
         String countryXpath = "//div[@class='menu transition visible']//div[@class='item']";
         String searchInputXpath = ".//input[@class='search']";
         String searchResultXpath = "//div[@class='menu transition visible']//div[@class='item']";
@@ -31,7 +32,7 @@ public class SearchSelection {
             WebDriverWait wait = new WebDriverWait(driver, 1000);
             WebElement dropdown = driver.findElement(By.xpath(dropdownXpath));
             dropdown.click();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='menu transition visible']")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(dropdownAfterXpath)));
             List<WebElement> countries = driver.findElements(By.xpath(countryXpath));
             int totalCountries = countries.size();
             System.out.println("Total number of countries: " + totalCountries);

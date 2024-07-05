@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
@@ -22,45 +21,47 @@ public class MultipleSelection {
 
         String dropdownXpath = "//div[@class='ui fluid dropdown selection multiple']";
         String dropdownAfterXpath = "//div[@class='ui fluid dropdown selection multiple active visible']";
-        try{
+        String optionxpath = "//div[@class='menu transition visible']//div[@class='item' and text()='";
+        String selectedOptionXpath = "//a[@class='ui label transition visible']";
+        try {
             WebDriverWait wait = new WebDriverWait(driver, 1000);
             WebElement dropdown = driver.findElement(By.xpath(dropdownXpath));
             dropdown.click();
-
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(dropdownAfterXpath)));
+            // Chọn các lựa chọn Ember, JavaScript, Meteor, Kitchen Repair
+            String[] skills = {"Ember", "JavaScript", "Meteor", "Kitchen Repair"};
+            for (String skill : skills) {
+                WebElement option = driver.findElement(By.xpath( optionxpath + skill + "']"));
+                option.click();
+            }
+            Thread.sleep(2000);
 
-            Select select = new Select(dropdown.findElement(By.tagName("select")));
-            selectOption(select, "Ember");
-            selectOption(select, "JavaScript");
-            selectOption(select, "Meteor");
-            selectOption(select, "Kitchen Repair");
+            // In ra các lựa chọn đã chọn
+            List<WebElement> selectedOptions = driver.findElements(By.xpath(selectedOptionXpath));
+            System.out.println("Selected skills:");
+            for (WebElement selectedOption : selectedOptions) {
+                System.out.println(selectedOption.getText());
+            }
 
-            printSelectedOptions(select);
+            // Xoá 2 lựa chọn
+            String[] skillsToRemove = {"Ember", "JavaScript"};
+            for (String skill : skillsToRemove) {
+                WebElement removeIcon = driver.findElement(By.xpath("//a[text()='" + skill + "']/i"));
+                removeIcon.click();
+            }
+            Thread.sleep(2000);
 
-            deselectOption(select, "Kitchen Repair");
-            deselectOption(select, "Meteor");
+            // In ra các lựa chọn còn lại
+            selectedOptions = driver.findElements(By.xpath(selectedOptionXpath));
+            System.out.println("Remaining skills:");
+            for (WebElement selectedOption : selectedOptions) {
+                System.out.println(selectedOption.getText());
+            }
 
-            printSelectedOptions(select);
-
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Exception occurred: " + e.getMessage());
         } finally {
             driver.quit();
-        }
-    }
-    private static void selectOption(Select select, String optionText) {
-        select.selectByVisibleText(optionText);
-    }
-
-    private static void deselectOption(Select select, String optionText) {
-        select.deselectByVisibleText(optionText);
-    }
-
-    private static void printSelectedOptions(Select select) {
-        System.out.println("\nSelected options:");
-        for (WebElement option : select.getAllSelectedOptions()) {
-            System.out.println(option.getText().trim());
         }
     }
 }
