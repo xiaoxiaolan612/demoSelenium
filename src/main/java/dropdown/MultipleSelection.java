@@ -7,7 +7,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
 /*
 1. Hãy chọn 4 lựa chọn Ember, JavaScript, Meteor, Kitchen Repair và in ra 4 lựa chọn này
 2. Xoá 2 lựa chọn và in ra 2 lựa chọn còn lại
@@ -18,50 +17,57 @@ public class MultipleSelection {
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get("https://semantic-ui.com/modules/dropdown.html");
-
         String dropdownXpath = "//div[@class='ui fluid dropdown selection multiple']";
         String dropdownAfterXpath = "//div[@class='ui fluid dropdown selection multiple active visible']";
-        String optionxpath = "//div[@class='menu transition visible']//div[@class='item' and text()='";
-        String selectedOptionXpath = "//a[@class='ui label transition visible']";
         try {
             WebDriverWait wait = new WebDriverWait(driver, 1000);
             WebElement dropdown = driver.findElement(By.xpath(dropdownXpath));
             dropdown.click();
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(dropdownAfterXpath)));
-            // Chọn các lựa chọn Ember, JavaScript, Meteor, Kitchen Repair
-            String[] skills = {"Ember", "JavaScript", "Meteor", "Kitchen Repair"};
-            for (String skill : skills) {
-                WebElement option = driver.findElement(By.xpath( optionxpath + skill + "']"));
-                option.click();
-            }
-            Thread.sleep(2000);
 
-            // In ra các lựa chọn đã chọn
-            List<WebElement> selectedOptions = driver.findElements(By.xpath(selectedOptionXpath));
-            System.out.println("Selected skills:");
-            for (WebElement selectedOption : selectedOptions) {
-                System.out.println(selectedOption.getText());
-            }
+            String emberXpath = "(//div[@class='item'][normalize-space()='Ember'])[1]";
+            String jsXpath = "(//div[@class='item'][normalize-space()='Javascript'])[1]";
+            String meXpath = "(//div[@class='item'][normalize-space()='Meteor'])[1]";
+            String krXpath = "(//div[@class='item'][normalize-space()='Kitchen Repair'])[1]";
+            // Chọn các lựa chọn Ember, JavaScript, Meteor, Kitchen Repair
+            selectDropdownOption(driver, emberXpath);
+            WebElement ember = driver.findElement(By.cssSelector("a[data-value='ember']"));
+            System.out.print(" lựa chọn đã chọn:" + ember.getAttribute("data-value").trim());
+            selectDropdownOption(driver, jsXpath);
+            WebElement js = driver.findElement(By.cssSelector("a[data-value='javascript']"));
+            System.out.print(" " + js.getAttribute("data-value").trim());
+            selectDropdownOption(driver, meXpath);
+            WebElement me = driver.findElement(By.cssSelector("a[data-value='meteor']"));
+            System.out.print(" " + me.getAttribute("data-value").trim());
+            selectDropdownOption(driver, krXpath);
+            WebElement repair = driver.findElement(By.cssSelector("a[data-value='repair']"));
+            System.out.print(" " + repair.getAttribute("data-value").trim());
+            System.out.println();
+
 
             // Xoá 2 lựa chọn
-            String[] skillsToRemove = {"Ember", "JavaScript"};
-            for (String skill : skillsToRemove) {
-                WebElement removeIcon = driver.findElement(By.xpath("//a[text()='" + skill + "']/i"));
-                removeIcon.click();
-            }
-            Thread.sleep(2000);
+            String deleEmberCSS = "a[data-value='ember'] i[class='delete icon']";
+            String deleJsCSS = "a[data-value='javascript'] i[class='delete icon']";
+            deselectDropdownOption(driver, deleEmberCSS);
+            deselectDropdownOption(driver, deleJsCSS);
 
-            // In ra các lựa chọn còn lại
-            selectedOptions = driver.findElements(By.xpath(selectedOptionXpath));
-            System.out.println("Remaining skills:");
-            for (WebElement selectedOption : selectedOptions) {
-                System.out.println(selectedOption.getText());
-            }
+            System.out.print("lựa chọn còn lại: " + me.getAttribute("data-value").trim());
+            System.out.print(" " + repair.getAttribute("data-value").trim());
 
         } catch (Exception e) {
             System.err.println("Exception occurred: " + e.getMessage());
         } finally {
             driver.quit();
         }
+    }
+    private static void selectDropdownOption(WebDriver driver, String optionXpath) {
+
+        WebElement option = driver.findElement(By.xpath(optionXpath));
+        option.click();
+    }
+
+    private static void deselectDropdownOption(WebDriver driver, String optionCSS) {
+        WebElement selectedOption = driver.findElement(By.cssSelector(optionCSS));
+        selectedOption.click();
     }
 }
