@@ -1,9 +1,9 @@
 package checkbox;
 
+import driver.DriverSetup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 /*
 Kiểm tra xem radio button có enable không.
@@ -11,10 +11,8 @@ Kiểm tra xem mục "Twice a day" đã được chọn hay chưa.
 Nếu đã được chọn thì chọn mục "Once a week".
  */
 public class Radio {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
+    public void checkRadio() {
+        WebDriver driver = DriverSetup.getDriver();
         driver.get("https://semantic-ui.com/modules/checkbox.html");
         String twiceADayRadioXpath = "//div[@class='ui radio checkbox'][.//label[text()='Twice a day']]";
         String onceAWeekRadioXpath = "//div[@class='ui radio checkbox'][.//label[text()='Once a week']]";

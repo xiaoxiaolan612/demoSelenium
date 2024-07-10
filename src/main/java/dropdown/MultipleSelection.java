@@ -1,9 +1,9 @@
 package dropdown;
 
+import driver.DriverSetup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,10 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 2. Xoá 2 lựa chọn và in ra 2 lựa chọn còn lại
  */
 public class MultipleSelection {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
+    public void checkMultipleSelenium() {
+        WebDriver driver = DriverSetup.getDriver();
         driver.get("https://semantic-ui.com/modules/dropdown.html");
         String dropdownXpath = "//div[@class='ui fluid dropdown selection multiple']";
         String dropdownAfterXpath = "//div[@class='ui fluid dropdown selection multiple active visible']";

@@ -1,19 +1,17 @@
 package checkbox;
 
+import driver.DriverSetup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 /*
 Yêu cầu:
 Kiểm tra checkbox đã được check hay chưa
 Nếu chưa thì tick vào checkbox và ngược lại
  */
 public class Checkbox {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
+    public void checkCheckbox() {
+        WebDriver driver = DriverSetup.getDriver();
         driver.get("https://semantic-ui.com/modules/checkbox.html");
         String checkboxXpath = "//div[@class='ui checkbox']";
         try{

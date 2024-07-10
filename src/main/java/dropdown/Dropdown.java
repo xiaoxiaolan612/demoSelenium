@@ -1,20 +1,16 @@
 package dropdown;
 
+import driver.DriverSetup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.concurrent.TimeUnit;
 //nhấp vào Private FTP
 public class Dropdown {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
+    public void checkDropdown() {
+        WebDriver driver = DriverSetup.getDriver();
         driver.get("https://semantic-ui.com/modules/dropdown.html");
         String dropdownXpath = "//div[@class='simple example']//div[@class='ui dropdown']";
         String menuXpath = "//div[@class='menu transition visible']";

@@ -1,9 +1,9 @@
 package dropdown;
 
+import driver.DriverSetup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,10 +18,8 @@ Tìm kiếm từ khóa "b" và đếm số kết quả.
 Tìm "Vietnam".
  */
 public class SearchSelection {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
+    public void checkSearchSelection() {
+        WebDriver driver = DriverSetup.getDriver();
         driver.get("https://semantic-ui.com/modules/dropdown.html");
         String dropdownXpath = "//div[@class='ui fluid search selection dropdown']";
         String dropdownAfterXpath = "//div[@class='menu transition visible']";
