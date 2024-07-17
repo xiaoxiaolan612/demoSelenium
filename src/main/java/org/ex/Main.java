@@ -6,8 +6,12 @@ import dropdown.Dropdown;
 import dropdown.MultipleSelection;
 import dropdown.SearchSelection;
 import dropdown.Selection;
+import frame.FrameTest;
+import frame.NestedFrame;
 import popup.Modal;
 import popup.PopupTest;
+import uploadanddownload.UploadDownload;
+import windows.Windows;
 
 import java.util.Scanner;
 
@@ -26,6 +30,10 @@ public class Main {
             System.out.println("6. Test SearchSelection");
             System.out.println("7. Test Popup");
             System.out.println("8. Test Modal");
+            System.out.println("9. Test Frame");
+            System.out.println("10. Test IFrame");
+            System.out.println("11. Test Windows");
+            System.out.println("12. Test Upload and Download");
             System.out.println("0. Thoát");
             System.out.print("Chọn một tùy chọn: ");
             int choice = scanner.nextInt();
@@ -63,6 +71,24 @@ public class Main {
                     Modal modal = new Modal();
                     modal.testModalStandard();
                     modal.testModalBasic();
+                    break;
+                case 9:
+                    FrameTest frame = new FrameTest();
+                    frame.frameCheck();
+                    break;
+                case 10:
+                    NestedFrame nestedFrame = new NestedFrame();
+                    nestedFrame.nestedFrameCheck();
+                    break;
+                case 11:
+                    Windows windows = new Windows();
+                    windows.testNewTab();
+                    windows.testNewWindow();
+                    windows.testNewWindowMessage();
+                    break;
+                case 12:
+                    UploadDownload uploadDownload = new UploadDownload();
+                    uploadDownload.uploadDownloadCheck();
                     break;
                 case 0:
                     exit = true;
