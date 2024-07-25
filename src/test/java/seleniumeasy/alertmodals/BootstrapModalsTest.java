@@ -43,7 +43,7 @@ public class BootstrapModalsTest {
     }
 
     @Test
-    public void testMultipleModals() throws InterruptedException {
+    public void testMultipleModals(){
         WebElement button = driver.findElement(By.xpath("//a[@href='#myModal']"));
         button.click();
 
@@ -78,7 +78,7 @@ public class BootstrapModalsTest {
     }
 
     @Test
-    public void testCloseSingleModal() throws InterruptedException {
+    public void testCloseSingleModal(){
         WebElement button = driver.findElement(By.xpath("//div[@class='panel-body']/a[@href='#myModal0']"));
         button.click();
 
