@@ -16,129 +16,146 @@ public class BootstrapModalsTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // Define constants for locators and class names
+    private static final String BASE_URL = "https://demo.seleniumeasy.com/bootstrap-modal-demo.html";
+    private static final String FIRST_MODAL_BUTTON_XPATH = "//div[@class='panel-body']/a[@href='#myModal0']";
+    private static final String FIRST_MODAL_ID = "myModal0";
+    private static final String FIRST_MODAL_CLASS_VISIBLE = "modal fade in";
+    private static final String FIRST_MODAL_CLASS_HIDDEN = "modal fade";
+    private static final String SECOND_MODAL_BUTTON_XPATH = "//a[@href='#myModal']";
+    private static final String SECOND_MODAL_ID = "myModal";
+    private static final String SECOND_MODAL_CLASS_VISIBLE = "modal fade in";
+    private static final String SECOND_MODAL_CLASS_HIDDEN = "modal fade";
+    private static final String SECOND_MODAL_LAUNCH_BUTTON_XPATH = "//div[@class='modal-body']/a[@href='#myModal2']";
+    private static final String SECOND_MODAL_SECOND_ID = "myModal2";
+    private static final String SECOND_MODAL_SECOND_CLASS_VISIBLE = "modal fade rotate in";
+    private static final String SECOND_MODAL_SECOND_CLASS_HIDDEN = "modal fade rotate";
+    private static final String SAVE_BUTTON_XPATH = "//div[@class='modal-footer']/a[@class='btn btn-primary']";
+    private static final String CLOSE_BUTTON_XPATH = "//div[@class='modal-footer']/a[@class='btn']";
+    private static final String CLOSE_SECOND_BUTTON_XPATH = "(//a[@class='btn'][normalize-space()='Close'])[3]";
+    private static final String CLOSE_FIRST_BUTTON_XPATH = "(//a[@class='btn'][normalize-space()='Close'])[2]";
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-        wait = new WebDriverWait(driver, 1000);
-        driver.get("https://demo.seleniumeasy.com/bootstrap-modal-demo.html");
+        wait = new WebDriverWait(driver, 10);
+        driver.get(BASE_URL);
     }
+
     @Test
     public void testSingleModal() {
-        WebElement button = driver.findElement(By.xpath("//div[@class='panel-body']/a[@href='#myModal0']"));
+        WebElement button = driver.findElement(By.xpath(FIRST_MODAL_BUTTON_XPATH));
         button.click();
 
-        WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div[@id='myModal0'])[1]")));
+        WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(FIRST_MODAL_ID)));
         String display = modal.getAttribute("class");
-        System.out.println(display);
-        assertTrue(display.equals("modal fade in"), "Modal nên có class in khi hiển thị");
-//         Nhấp vào nút "Save changes" trong modal
-        WebElement modalContent = driver.findElement(By.xpath("(//div[@class='modal-content'])[1]"));
-        WebElement saveButton = modalContent.findElement(By.xpath("//div[@class='modal-footer']/a[@class='btn btn-primary']"));
+        assertTrue(display.equals(FIRST_MODAL_CLASS_VISIBLE), "Modal nên có class 'in' khi hiển thị");
+
+        // Nhấp vào nút "Save changes" trong modal
+        WebElement saveButton = modal.findElement(By.xpath(SAVE_BUTTON_XPATH));
         saveButton.click();
 
         // Xác minh rằng modal đã đóng
-        WebElement modalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div[@id='myModal0'])[1]")));
-        String display2 = modalAfter.getAttribute("class");
-        assertTrue(display2.equals("modal fade"), "Modal nên đóng lại sau khi nhấp 'Save changes'");
+        WebElement modalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(FIRST_MODAL_ID)));
+        String displayAfter = modalAfter.getAttribute("class");
+        assertTrue(displayAfter.equals(FIRST_MODAL_CLASS_HIDDEN), "Modal nên đóng lại sau khi nhấp 'Save changes'");
     }
 
     @Test
-    public void testMultipleModals(){
-        WebElement button = driver.findElement(By.xpath("//a[@href='#myModal']"));
+    public void testMultipleModals() {
+        WebElement button = driver.findElement(By.xpath(SECOND_MODAL_BUTTON_XPATH));
         button.click();
 
         // Xác minh rằng modal đầu tiên được hiển thị
-        WebElement firstModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal")));
+        WebElement firstModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_ID)));
         String display = firstModal.getAttribute("class");
-        System.out.println(display);
-        assertTrue(display.equals("modal fade in"), "Modal nên có class in khi hiển thị");
+        assertTrue(display.equals(SECOND_MODAL_CLASS_VISIBLE), "Modal đầu tiên nên có class 'in' khi hiển thị");
 
         // Nhấp vào nút "Launch modal" trong modal đầu tiên
-        WebElement launchSecondModalButton = firstModal.findElement(By.xpath("//div[@class='modal-body']/a[@href='#myModal2']"));
+        WebElement launchSecondModalButton = firstModal.findElement(By.xpath(SECOND_MODAL_LAUNCH_BUTTON_XPATH));
         launchSecondModalButton.click();
 
         // Xác minh rằng modal thứ hai được hiển thị
-        WebElement secondModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal2")));
-        String display2 = secondModal.getAttribute("class");
-        System.out.println(display2);
-        assertTrue(display2.equals("modal fade rotate in"), "Modal 2 nên có class in khi hiển thị");
+        WebElement secondModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_SECOND_ID)));
+        String displaySecond = secondModal.getAttribute("class");
+        assertTrue(displaySecond.equals(SECOND_MODAL_SECOND_CLASS_VISIBLE), "Modal thứ hai nên có class 'in' khi hiển thị");
 
         // Nhấp vào nút "Save changes" trong modal thứ hai
-        WebElement saveSecondButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//a[@class='btn btn-primary'][normalize-space()='Save changes'])[3]")));
+        WebElement saveSecondButton = secondModal.findElement(By.xpath(SAVE_BUTTON_XPATH));
         saveSecondButton.click();
 
         // Xác minh rằng modal thứ hai đã đóng
-        WebElement secondModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal2")));
-        String display2After = secondModalAfter.getAttribute("class");
-        assertTrue(display2After.equals("modal fade rotate"), "Modal thứ hai nên đóng lại sau khi nhấp 'Save changes'");
+        WebElement secondModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_SECOND_ID)));
+        String displaySecondAfter = secondModalAfter.getAttribute("class");
+        assertTrue(displaySecondAfter.equals(SECOND_MODAL_SECOND_CLASS_HIDDEN), "Modal thứ hai nên đóng lại sau khi nhấp 'Save changes'");
+
         // Xác minh rằng modal đầu tiên đã đóng
-        WebElement firstModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal")));
-        String displayAfter = firstModalAfter.getAttribute("class");
-        assertTrue(displayAfter.equals("modal fade"), "Modal đầu tiên nên đóng lại sau khi nhấp 'Save changes'");
+        WebElement firstModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_ID)));
+        String displayFirstAfter = firstModalAfter.getAttribute("class");
+        assertTrue(displayFirstAfter.equals(SECOND_MODAL_CLASS_HIDDEN), "Modal đầu tiên nên đóng lại sau khi nhấp 'Save changes'");
     }
 
     @Test
-    public void testCloseSingleModal(){
-        WebElement button = driver.findElement(By.xpath("//div[@class='panel-body']/a[@href='#myModal0']"));
+    public void testCloseSingleModal() {
+        WebElement button = driver.findElement(By.xpath(FIRST_MODAL_BUTTON_XPATH));
         button.click();
 
         // Xác minh rằng modal được hiển thị
-        WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal0")));
+        WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(FIRST_MODAL_ID)));
         String display = modal.getAttribute("class");
-        System.out.println(display);
-        assertTrue(display.equals("modal fade in"), "Modal nên có class in khi hiển thị");
+        assertTrue(display.equals(FIRST_MODAL_CLASS_VISIBLE), "Modal nên có class 'in' khi hiển thị");
 
         // Nhấp vào nút "Close" trong modal
-        WebElement closeButton = modal.findElement(By.xpath("//div[@class='modal-footer']/a[@class='btn']"));
+        WebElement closeButton = modal.findElement(By.xpath(CLOSE_BUTTON_XPATH));
         closeButton.click();
-        WebElement modalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal0")));
-        String display2 = modalAfter.getAttribute("class");
+
+        WebElement modalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(FIRST_MODAL_ID)));
+        String displayAfter = modalAfter.getAttribute("class");
         // Xác minh rằng modal đã đóng
-        assertTrue(display2.equals("modal fade"), "Modal nên đóng lại sau khi nhấp 'Close'");
+        assertTrue(displayAfter.equals(FIRST_MODAL_CLASS_HIDDEN), "Modal nên đóng lại sau khi nhấp 'Close'");
     }
 
     @Test
     public void testCloseMultipleModals() {
-        WebElement button = driver.findElement(By.xpath("//div[@class='panel-body']/a[@href='#myModal']"));
+        WebElement button = driver.findElement(By.xpath(SECOND_MODAL_BUTTON_XPATH));
         button.click();
 
         // Xác minh rằng modal đầu tiên được hiển thị
-        WebElement firstModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal")));
+        WebElement firstModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_ID)));
         String display = firstModal.getAttribute("class");
-        System.out.println(display);
-        assertTrue(display.equals("modal fade in"), "Modal nên có class in khi hiển thị");
+        assertTrue(display.equals(SECOND_MODAL_CLASS_VISIBLE), "Modal đầu tiên nên có class 'in' khi hiển thị");
 
         // Nhấp vào nút "Launch modal" trong modal đầu tiên
-        WebElement launchSecondModalButton = firstModal.findElement(By.xpath("//div[@class='modal-body']/a[@href='#myModal2']"));
+        WebElement launchSecondModalButton = firstModal.findElement(By.xpath(SECOND_MODAL_LAUNCH_BUTTON_XPATH));
         launchSecondModalButton.click();
 
         // Xác minh rằng modal thứ hai được hiển thị
-        WebElement secondModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal2")));
-        String display2 = secondModal.getAttribute("class");
-        System.out.println(display2);
-        assertTrue(display2.equals("modal fade rotate in"), "Modal 2 nên có class in khi hiển thị");
+        WebElement secondModal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_SECOND_ID)));
+        String displaySecond = secondModal.getAttribute("class");
+        assertTrue(displaySecond.equals(SECOND_MODAL_SECOND_CLASS_VISIBLE), "Modal thứ hai nên có class 'in' khi hiển thị");
 
         // Nhấp vào nút "Close" trong modal thứ hai
-        WebElement closeSecondButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//a[@class='btn'][normalize-space()='Close'])[3]")));
+        WebElement closeSecondButton = secondModal.findElement(By.xpath(CLOSE_SECOND_BUTTON_XPATH));
         closeSecondButton.click();
 
         // Xác minh rằng modal thứ hai đã đóng
-        WebElement secondModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal2")));
-        String display2After = secondModalAfter.getAttribute("class");
-        assertTrue(display2After.equals("modal fade rotate"), "Modal thứ hai nên đóng lại sau khi nhấp 'Close'");
+        WebElement secondModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_SECOND_ID)));
+        String displaySecondAfter = secondModalAfter.getAttribute("class");
+        assertTrue(displaySecondAfter.equals(SECOND_MODAL_SECOND_CLASS_HIDDEN), "Modal thứ hai nên đóng lại sau khi nhấp 'Close'");
 
         // Xác minh rằng modal đầu tiên vẫn hiển thị
-        assertTrue(display.equals("modal fade in"), "Modal đầu tiên vẫn nên hiển thị sau khi modal thứ hai đóng");
+        assertTrue(display.equals(SECOND_MODAL_CLASS_VISIBLE), "Modal đầu tiên vẫn nên hiển thị sau khi modal thứ hai đóng");
 
         // Nhấp vào nút "Close" trong modal đầu tiên
-        WebElement closeFirstButton = firstModal.findElement(By.xpath("(//a[@class='btn'][normalize-space()='Close'])[2]"));
+        WebElement closeFirstButton = firstModal.findElement(By.xpath(CLOSE_FIRST_BUTTON_XPATH));
         closeFirstButton.click();
 
         // Xác minh rằng modal đầu tiên đã đóng
-        WebElement firstModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("myModal")));
-        String displayAfter = firstModalAfter.getAttribute("class");
-        assertTrue(displayAfter.equals("modal fade"), "Modal đầu tiên nên đóng lại sau khi nhấp 'Close'");
+        WebElement firstModalAfter = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(SECOND_MODAL_ID)));
+        String displayFirstAfter = firstModalAfter.getAttribute("class");
+        assertTrue(displayFirstAfter.equals(SECOND_MODAL_CLASS_HIDDEN), "Modal đầu tiên nên đóng lại sau khi nhấp 'Close'");
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

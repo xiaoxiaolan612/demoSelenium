@@ -17,36 +17,50 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-
 public class JQuerySelectDropdownTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // Define XPaths as constants
+    private static final String DROPDOWN_XPATH = "(//span[@role='combobox'])[1]";
+    private static final String SEARCH_INPUT_XPATH = "//span[@class='select2-search select2-search--dropdown']//input[@role='textbox']";
+    private static final String RESULT_XPATH_TEMPLATE = "//li[contains(text(), '%s')]";
+    private static final String SELECTED_VALUE_XPATH = "//span[@aria-labelledby='select2-country-container']";
+
+    private static final String MULTI_SELECT_XPATH = "//input[@placeholder='Select state(s)']";
+    private static final String MULTI_SEARCH_INPUT_XPATH = "//input[@class='select2-search__field']";
+    private static final String MULTI_SELECTED_VALUE_XPATH_TEMPLATE = "//li[contains(@class, 'select2-selection__choice') and contains(@title, '%s')]";
+
+    private static final String DISABLED_DROPDOWN_XPATH = "(//span[@role='presentation'])[2]";
+    private static final String DISABLED_OPTION_XPATH = "//li[contains(@class, 'select2-results__option') and text()='Guam']";
+    private static final String VALID_OPTION_XPATH = "//li[contains(@class, 'select2-results__option') and text()='Puerto Rico']";
+    private static final String DISABLED_OPTION_TEXT = "Guam";
+    private static final String VALID_OPTION_TEXT = "Puerto Rico";
+    private static final String SELECTED_VALUE_XPATHH = "//span[@title='Puerto Rico']";
+
+    private static final String CATEGORY_DROPDOWN_ID = "files";
+    private static final String CATEGORY_SELECT_TEXT_1 = "Python";
+    private static final String CATEGORY_SELECT_TEXT_2 = "Java";
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-        wait = new WebDriverWait(driver, 1000);
+        wait = new WebDriverWait(driver, 10); // Adjusted timeout to 10 seconds for practicality
         driver.get("https://demo.seleniumeasy.com/jquery-dropdown-search-demo.html");
     }
 
     @Test
     public void testDropdownSearch() {
-        String selectDropdownXpath = "(//span[@role='combobox'])[1]";
-        String searchInputXpath = "//span[@class='select2-search select2-search--dropdown']//input[@role='textbox']";
-        String resultXpath = "//li[contains(text(), 'Denmark')]";
-        String selectedValueXpath = "//span[@aria-labelledby='select2-country-container']";
-        WebElement selectDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(selectDropdownXpath)));
+        WebElement selectDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(DROPDOWN_XPATH)));
         selectDropdown.click();
 
-        // Nhập giá trị tìm kiếm trong ô input
-        WebElement searchInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(searchInputXpath)));
+        WebElement searchInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(SEARCH_INPUT_XPATH)));
         searchInput.sendKeys("Denmark");
 
-        WebElement result = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(resultXpath)));
+        WebElement result = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(RESULT_XPATH_TEMPLATE, "Denmark"))));
         result.click();
 
-        // Kiểm tra giá trị được chọn
-        WebElement selectedValue = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(selectedValueXpath)));
+        WebElement selectedValue = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(SELECTED_VALUE_XPATHH)));
         assertTrue(selectedValue.getText().contains("Denmark"), "Selected value is not Denmark.");
     }
 
@@ -54,66 +68,54 @@ public class JQuerySelectDropdownTest {
     public void testMultiSelectSearch() {
         List<String> states = Arrays.asList("Alaska", "California", "Florida");
 
-        String multiSelectXpath = "//input[@placeholder='Select state(s)']";
-        String searchInputXpath = "//input[@class='select2-search__field']";
-        WebElement multiSelectDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(multiSelectXpath)));
+        WebElement multiSelectDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(MULTI_SELECT_XPATH)));
         multiSelectDropdown.click();
 
         for (String state : states) {
-            // Nhập giá trị tìm kiếm trong ô input
-            WebElement searchInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(searchInputXpath)));
+            WebElement searchInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(MULTI_SEARCH_INPUT_XPATH)));
             searchInput.sendKeys(state);
 
-            WebElement result = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[contains(text(), '" + state + "')]")));
+            WebElement result = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format(RESULT_XPATH_TEMPLATE, state))));
             result.click();
-
         }
 
-        // Kiểm tra các giá trị đã được chọn
         for (String state : states) {
-            WebElement selectedValue = wait.until(ExpectedConditions.presenceOfElementLocated(By.
-                    xpath("//li[contains(@class, 'select2-selection__choice') and contains(@title, '" + state + "')]")));
+            WebElement selectedValue = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(String.format(MULTI_SELECTED_VALUE_XPATH_TEMPLATE, state))));
             assertTrue(selectedValue.isDisplayed(), "State " + state + " is not selected.");
         }
     }
+
     @Test
     public void testDisabledDropdownValues() {
-
-        String dropdownXpath = "(//span[@role='presentation'])[2]";
-        String disabledOptionXpath = "//li[contains(@class, 'select2-results__option') and text()='Guam']";
-        String validOptionXpath = "//li[contains(@class, 'select2-results__option') and text()='Puerto Rico']";
-        String selectedValueXpath = "//span[@title='Puerto Rico']";
-        WebElement dropdown = driver.findElement(By.xpath(dropdownXpath));
+        WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(DISABLED_DROPDOWN_XPATH)));
         dropdown.click();
 
-        // Kiểm tra giá trị disable không thể click được
-        WebElement disabledOption = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(disabledOptionXpath)));
-        assertTrue(disabledOption.isEnabled(), "Disabled option 'Guam' should not be enabled.");
+        WebElement disabledOption = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(DISABLED_OPTION_XPATH)));
+        assertTrue(!disabledOption.isEnabled(), "Disabled option 'Guam' should not be enabled.");
 
-        // Chọn một giá trị hợp lệ
-        WebElement validOption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(validOptionXpath)));
+        WebElement validOption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(VALID_OPTION_XPATH)));
         validOption.click();
 
-        // Kiểm tra giá trị được chọn
-        WebElement selectedValue = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(selectedValueXpath)));
-        assertTrue(selectedValue.getText().contains("Puerto Rico"), "Selected value is not Puerto Rico.");
+        WebElement selectedValue = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(SELECTED_VALUE_XPATHH)));
+        assertTrue(selectedValue.getText().contains(VALID_OPTION_TEXT), "Selected value is not " + VALID_OPTION_TEXT + ".");
     }
+
     @Test
     public void testCategoryDropdown() {
-
-        WebElement categoryDropDown = driver.findElement(By.id("files"));
+        WebElement categoryDropDown = driver.findElement(By.id(CATEGORY_DROPDOWN_ID));
         Select select = new Select(categoryDropDown);
 
-        select.selectByVisibleText("Python");
+        select.selectByVisibleText(CATEGORY_SELECT_TEXT_1);
         WebElement selectedOption = select.getFirstSelectedOption();
         String selectedText = selectedOption.getText();
-        assertEquals("Python", selectedText);
+        assertEquals(CATEGORY_SELECT_TEXT_1, selectedText);
 
-        select.selectByVisibleText("Java");
+        select.selectByVisibleText(CATEGORY_SELECT_TEXT_2);
         selectedOption = select.getFirstSelectedOption();
         selectedText = selectedOption.getText();
-        assertEquals("Java", selectedText);
+        assertEquals(CATEGORY_SELECT_TEXT_2, selectedText);
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

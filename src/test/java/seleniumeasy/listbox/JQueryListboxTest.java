@@ -15,107 +15,99 @@ import static org.testng.Assert.assertTrue;
 public class JQueryListboxTest {
 
     private WebDriver driver;
-//    private WebDriverWait wait;
+
+    // XPaths
+    private static final String LEFT_LIST_XPATH = "//select[@class='form-control pickListSelect pickData']//option";
+    private static final String RIGHT_LIST_XPATH = "//select[@class='form-control pickListSelect pickListResult']//option";
+    private static final String ADD_BUTTON_XPATH = "//button[contains(text(), 'Add')]";
+    private static final String ADD_ALL_BUTTON_XPATH = "//button[contains(text(), 'Add All')]";
+    private static final String REMOVE_BUTTON_XPATH = "//button[contains(text(), 'Remove')]";
+    private static final String REMOVE_ALL_BUTTON_XPATH = "//button[contains(text(), 'Remove All')]";
 
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-//        wait = new WebDriverWait(driver, 1000);
         driver.get("https://demo.seleniumeasy.com/jquery-dual-list-box-demo.html");
     }
 
     @Test
     public void testMoveSingleItemToRight() {
-        // Chọn một mục trong danh sách bên trái
-        WebElement leftItem = driver.findElement(By.xpath("//select[@class='form-control pickListSelect pickData']//option[contains(text(),'Isis')]"));
+        WebElement leftItem = driver.findElement(By.xpath(LEFT_LIST_XPATH + "[contains(text(),'Isis')]"));
         leftItem.click();
 
-        // Nhấp vào nút "Add"
-        WebElement moveRightButton = driver.findElement(By.xpath("//button[contains(text(), 'Add')]"));
+        WebElement moveRightButton = driver.findElement(By.xpath(ADD_BUTTON_XPATH));
         moveRightButton.click();
 
-        // Xác minh rằng mục đã được chuyển sang danh sách bên phải
-        List<WebElement> rightItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickListResult']//option[contains(text(),'Isis')]"));
-        assertTrue(rightItems.size() > 0, "Mục không được chuyển sang danh sách bên phải.");
+        List<WebElement> rightItems = driver.findElements(By.xpath(RIGHT_LIST_XPATH + "[contains(text(),'Isis')]"));
+        assertTrue(rightItems.size() > 0, "Item was not moved to the right list.");
     }
 
     @Test
     public void testMoveMultipleItemsToRight() {
-        // Chọn nhiều mục trong danh sách bên trái
-        List<WebElement> leftItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickData']//option"));
+        List<WebElement> leftItems = driver.findElements(By.xpath(LEFT_LIST_XPATH));
         leftItems.get(0).click();
         leftItems.get(1).click();
 
-        // Nhấp vào nút ">"
-        WebElement moveRightButton = driver.findElement(By.xpath("//button[contains(text(), 'Add')]"));
+        WebElement moveRightButton = driver.findElement(By.xpath(ADD_BUTTON_XPATH));
         moveRightButton.click();
 
-        // Xác minh rằng các mục đã được chuyển sang danh sách bên phải
-        List<WebElement> rightItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickListResult']//option"));
-        assertTrue(rightItems.size() > 1, "Các mục không được chuyển sang danh sách bên phải.");
+        List<WebElement> rightItems = driver.findElements(By.xpath(RIGHT_LIST_XPATH));
+        assertTrue(rightItems.size() > 1, "Items were not moved to the right list.");
     }
 
     @Test
     public void testMoveAllItemsToRight() {
-        // Nhấp vào nút "Add all"
-        WebElement moveAllRightButton = driver.findElement(By.xpath("//button[contains(text(), 'Add All')]"));
+        WebElement moveAllRightButton = driver.findElement(By.xpath(ADD_ALL_BUTTON_XPATH));
         moveAllRightButton.click();
 
-        // Xác minh rằng tất cả các mục đã được chuyển sang danh sách bên phải
-        List<WebElement> leftItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickData']//option"));
-        assertTrue(leftItems.size() == 0, "Không phải tất cả các mục đã được chuyển sang danh sách bên phải.");
+        List<WebElement> leftItems = driver.findElements(By.xpath(LEFT_LIST_XPATH));
+        assertTrue(leftItems.size() == 0, "Not all items were moved to the right list.");
     }
 
     @Test
     public void testMoveSingleItemToLeft() {
-        WebElement moveAllRightButton = driver.findElement(By.xpath("//button[contains(text(), 'Add All')]"));
+        WebElement moveAllRightButton = driver.findElement(By.xpath(ADD_ALL_BUTTON_XPATH));
         moveAllRightButton.click();
-        // Chọn một mục trong danh sách bên phải
-        WebElement rightItem = driver.findElement(By.xpath("//select[@class='form-control pickListSelect pickListResult']//option[contains(text(),'Isis')]"));
+
+        WebElement rightItem = driver.findElement(By.xpath(RIGHT_LIST_XPATH + "[contains(text(),'Isis')]"));
         rightItem.click();
 
-        // Nhấp vào nút "<"
-        WebElement moveLeftButton = driver.findElement(By.xpath("//button[contains(text(), 'Remove')]"));
+        WebElement moveLeftButton = driver.findElement(By.xpath(REMOVE_BUTTON_XPATH));
         moveLeftButton.click();
 
-        // Xác minh rằng mục đã được chuyển sang danh sách bên trái
-        List<WebElement> leftItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickData']//option[contains(text(),'Isis')]"));
-        assertTrue(leftItems.size() > 0, "Mục không được chuyển sang danh sách bên trái.");
+        List<WebElement> leftItems = driver.findElements(By.xpath(LEFT_LIST_XPATH + "[contains(text(),'Isis')]"));
+        assertTrue(leftItems.size() > 0, "Item was not moved to the left list.");
     }
 
     @Test
     public void testMoveMultipleItemsToLeft() {
-        WebElement moveAllRightButton = driver.findElement(By.xpath("//button[contains(text(), 'Add All')]"));
+        WebElement moveAllRightButton = driver.findElement(By.xpath(ADD_ALL_BUTTON_XPATH));
         moveAllRightButton.click();
-        // Chọn nhiều mục trong danh sách bên phải
-        List<WebElement> rightItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickListResult']//option"));
+
+        List<WebElement> rightItems = driver.findElements(By.xpath(RIGHT_LIST_XPATH));
         rightItems.get(0).click();
         rightItems.get(1).click();
 
-        // Nhấp vào nút "<"
-        WebElement moveLeftButton = driver.findElement(By.xpath("//button[contains(text(), 'Remove')]"));
-        moveLeftButton.click();
+        WebElement removeButton = driver.findElement(By.xpath(REMOVE_BUTTON_XPATH));
+        removeButton.click();
 
-        // Xác minh rằng các mục đã được chuyển sang danh sách bên trái
-        List<WebElement> leftItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickData']//option"));
-        assertTrue(leftItems.size() > 1, "Các mục không được chuyển sang danh sách bên trái.");
+        List<WebElement> leftItems = driver.findElements(By.xpath(LEFT_LIST_XPATH));
+        assertTrue(leftItems.size() > 1, "Items were not moved to the left list.");
     }
 
     @Test
     public void testMoveAllItemsToLeft() {
-        // Nhấp vào nút "<<"
-        WebElement moveAllLeftButton = driver.findElement(By.xpath("//button[contains(text(), 'Remove All')]"));
-        moveAllLeftButton.click();
+        WebElement removeButton = driver.findElement(By.xpath(REMOVE_ALL_BUTTON_XPATH));
+        removeButton.click();
 
-        // Xác minh rằng tất cả các mục đã được chuyển sang danh sách bên trái
-        List<WebElement> rightItems = driver.findElements(By.xpath("//select[@class='form-control pickListSelect pickListResult']//option"));
-        assertTrue(rightItems.size() == 0, "Không phải tất cả các mục đã được chuyển sang danh sách bên trái.");
+        List<WebElement> rightItems = driver.findElements(By.xpath(RIGHT_LIST_XPATH));
+        assertTrue(rightItems.size() == 0, "Not all items were moved to the left list.");
     }
+
     @After
     public void tearDown() {
         if (driver != null) {
             driver.quit();
         }
     }
-
 }

@@ -8,28 +8,39 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class BootstrapAlertTest {
     private WebDriver driver;
-//    private WebDriverWait wait;
+
+    // Define constants for locators and class names
+    private static final String BASE_URL = "https://demo.seleniumeasy.com/bootstrap-alert-messages-demo.html";
+    private static final String AUTO_CLOSEABLE_SUCCESS_BUTTON_ID = "autoclosable-btn-success";
+    private static final String AUTO_CLOSEABLE_SUCCESS_ALERT_CSS = ".alert-autocloseable-success";
+    private static final String NORMAL_SUCCESS_BUTTON_ID = "normal-btn-success";
+    private static final String NORMAL_SUCCESS_ALERT_CSS = ".alert-normal-success";
+    private static final String AUTO_CLOSEABLE_WARNING_BUTTON_ID = "autoclosable-btn-warning";
+    private static final String AUTO_CLOSEABLE_WARNING_ALERT_CSS = ".alert-autocloseable-warning";
+    private static final String NORMAL_WARNING_BUTTON_ID = "normal-btn-warning";
+    private static final String NORMAL_WARNING_ALERT_CSS = ".alert-normal-warning";
+    private static final String CLOSE_BUTTON_CSS = "button.close";
 
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-//        wait = new WebDriverWait(driver, 1000);
-        driver.get("https://demo.seleniumeasy.com/bootstrap-alert-messages-demo.html");
+        driver.get(BASE_URL);
     }
+
     @Test
     public void testAutoClosableSuccessMessage() {
-        WebElement button = driver.findElement(By.id("autoclosable-btn-success"));
+        WebElement button = driver.findElement(By.id(AUTO_CLOSEABLE_SUCCESS_BUTTON_ID));
         button.click();
 
-        WebElement successMessage = driver.findElement(By.cssSelector(".alert-autocloseable-success"));
+        WebElement successMessage = driver.findElement(By.cssSelector(AUTO_CLOSEABLE_SUCCESS_ALERT_CSS));
         assertTrue(successMessage.isDisplayed(), "Success message should be displayed");
 
+        // Wait for 5 seconds to let the message auto-close
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -41,13 +52,13 @@ public class BootstrapAlertTest {
 
     @Test
     public void testNormalSuccessMessage() {
-        WebElement button = driver.findElement(By.id("normal-btn-success"));
+        WebElement button = driver.findElement(By.id(NORMAL_SUCCESS_BUTTON_ID));
         button.click();
 
-        WebElement successMessage = driver.findElement(By.cssSelector(".alert-normal-success"));
+        WebElement successMessage = driver.findElement(By.cssSelector(NORMAL_SUCCESS_ALERT_CSS));
         assertTrue(successMessage.isDisplayed(), "Success message should be displayed");
 
-        WebElement closeButton = successMessage.findElement(By.cssSelector("button.close"));
+        WebElement closeButton = successMessage.findElement(By.cssSelector(CLOSE_BUTTON_CSS));
         closeButton.click();
 
         assertFalse(successMessage.isDisplayed(), "Success message should be closed when the close button is clicked");
@@ -55,12 +66,13 @@ public class BootstrapAlertTest {
 
     @Test
     public void testAutoClosableWarningMessage() {
-        WebElement button = driver.findElement(By.id("autoclosable-btn-warning"));
+        WebElement button = driver.findElement(By.id(AUTO_CLOSEABLE_WARNING_BUTTON_ID));
         button.click();
 
-        WebElement warningMessage = driver.findElement(By.cssSelector(".alert-autocloseable-warning"));
+        WebElement warningMessage = driver.findElement(By.cssSelector(AUTO_CLOSEABLE_WARNING_ALERT_CSS));
         assertTrue(warningMessage.isDisplayed(), "Warning message should be displayed");
 
+        // Wait for 5 seconds to let the message auto-close
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -72,17 +84,18 @@ public class BootstrapAlertTest {
 
     @Test
     public void testNormalWarningMessage() {
-        WebElement button = driver.findElement(By.id("normal-btn-warning"));
+        WebElement button = driver.findElement(By.id(NORMAL_WARNING_BUTTON_ID));
         button.click();
 
-        WebElement warningMessage = driver.findElement(By.cssSelector(".alert-normal-warning"));
+        WebElement warningMessage = driver.findElement(By.cssSelector(NORMAL_WARNING_ALERT_CSS));
         assertTrue(warningMessage.isDisplayed(), "Warning message should be displayed");
 
-        WebElement closeButton = warningMessage.findElement(By.cssSelector("button.close"));
+        WebElement closeButton = warningMessage.findElement(By.cssSelector(CLOSE_BUTTON_CSS));
         closeButton.click();
 
         assertFalse(warningMessage.isDisplayed(), "Warning message should be closed when the close button is clicked");
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

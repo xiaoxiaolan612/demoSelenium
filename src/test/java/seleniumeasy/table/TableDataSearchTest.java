@@ -14,102 +14,116 @@ import static org.junit.Assert.assertTrue;
 
 public class TableDataSearchTest {
     private WebDriver driver;
-//    private WebDriverWait wait;
+
+    // Constants for locators and parameters
+    private static final String TASK_FILTER_ID = "task-table-filter";
+    private static final String USERNAME_FILTER_XPATH = "//input[@placeholder='Username']";
+    private static final String FIRST_NAME_FILTER_XPATH = "//input[@placeholder='First Name']";
+    private static final String LAST_NAME_FILTER_XPATH = "//input[@placeholder='Last Name']";
+    private static final String FILTER_BUTTON_XPATH = "//button[contains(text(),'Filter')]";
+    private static final String TASK_TABLE_XPATH = "//table[@id='task-table']/tbody/tr";
+    private static final String USER_TABLE_XPATH = "//table[@id='example']/tbody/tr";
+    private static final String WIREFRAMES_TASK = "Wireframes";
+    private static final String JOHN_SMITH_ASSIGNEE = "John Smith";
+    private static final String COMPLETED_STATUS = "completed";
+    private static final String USERNAME = "bootstrap";
+    private static final String FIRST_NAME = "John";
+    private static final String LAST_NAME = "Doe";
 
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-//        wait = new WebDriverWait(driver, 1000);
         driver.get("https://demo.seleniumeasy.com/table-search-filter-demo.html");
     }
 
     @Test
     public void testFilterByTask() {
-        // Lọc theo Task
-        WebElement taskFilter = driver.findElement(By.id("task-table-filter"));
-        taskFilter.sendKeys("Wireframes");
+        // Filter by Task
+        WebElement taskFilter = driver.findElement(By.id(TASK_FILTER_ID));
+        taskFilter.sendKeys(WIREFRAMES_TASK);
 
-        // Kiểm tra kết quả lọc
-        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='task-table']/tbody/tr"));
+        // Verify filter results
+        List<WebElement> rows = driver.findElements(By.xpath(TASK_TABLE_XPATH));
         for (WebElement row : rows) {
             if (row.isDisplayed()) {
                 WebElement taskCell = row.findElement(By.xpath("./td[2]"));
-                assertTrue(taskCell.getText().contains("Wireframes"));
+                assertTrue(taskCell.getText().contains(WIREFRAMES_TASK));
             }
         }
     }
 
     @Test
     public void testFilterByAssignee() {
-        // Lọc theo Assignee
-        WebElement assigneeFilter = driver.findElement(By.id("task-table-filter"));
-        assigneeFilter.sendKeys("John Smith");
+        // Filter by Assignee
+        WebElement assigneeFilter = driver.findElement(By.id(TASK_FILTER_ID));
+        assigneeFilter.sendKeys(JOHN_SMITH_ASSIGNEE);
 
-        // Kiểm tra kết quả lọc
-        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='task-table']/tbody/tr"));
+        // Verify filter results
+        List<WebElement> rows = driver.findElements(By.xpath(TASK_TABLE_XPATH));
         for (WebElement row : rows) {
             if (row.isDisplayed()) {
                 WebElement assigneeCell = row.findElement(By.xpath("./td[3]"));
-                assertTrue(assigneeCell.getText().contains("John Smith"));
+                assertTrue(assigneeCell.getText().contains(JOHN_SMITH_ASSIGNEE));
             }
         }
     }
 
     @Test
     public void testFilterByStatus() {
-        // Lọc theo Status
-        WebElement statusFilter = driver.findElement(By.id("task-table-filter"));
+        // Filter by Status
+        WebElement statusFilter = driver.findElement(By.id(TASK_FILTER_ID));
         statusFilter.sendKeys("Completed");
 
-        // Kiểm tra kết quả lọc
-        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='task-table']/tbody/tr"));
+        // Verify filter results
+        List<WebElement> rows = driver.findElements(By.xpath(TASK_TABLE_XPATH));
         for (WebElement row : rows) {
             if (row.isDisplayed()) {
                 WebElement statusCell = row.findElement(By.xpath("./td[4]"));
-                assertTrue(statusCell.getText().contains("completed"));
+                assertTrue(statusCell.getText().toLowerCase().contains(COMPLETED_STATUS));
             }
         }
     }
+
     @Test
     public void testFilterListedUsersTable() {
-        // Nhấp vào nút "Filter"
-        WebElement filterButton = driver.findElement(By.xpath("//button[contains(text(),'Filter')]"));
+        // Click the "Filter" button
+        WebElement filterButton = driver.findElement(By.xpath(FILTER_BUTTON_XPATH));
         filterButton.click();
 
-        // Lọc theo Username
-        WebElement usernameFilter = driver.findElement(By.xpath("//input[@placeholder='Username']"));
-        usernameFilter.sendKeys("bootstrap");
+        // Filter by Username
+        WebElement usernameFilter = driver.findElement(By.xpath(USERNAME_FILTER_XPATH));
+        usernameFilter.sendKeys(USERNAME);
 
-        // Kiểm tra kết quả lọc
-        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='example']/tbody/tr"));
+        // Verify filter results for Username
+        List<WebElement> rows = driver.findElements(By.xpath(USER_TABLE_XPATH));
         for (WebElement row : rows) {
             if (row.isDisplayed()) {
                 WebElement userCell = row.findElement(By.xpath("./td[2]"));
-                assertTrue(userCell.getText().contains("bootstrap"));
+                assertTrue(userCell.getText().contains(USERNAME));
             }
         }
 
-        // Lọc theo First Name
-        WebElement firstNameFilter = driver.findElement(By.xpath("//input[@placeholder='First Name']"));
-        firstNameFilter.sendKeys("John");
+        // Filter by First Name
+        WebElement firstNameFilter = driver.findElement(By.xpath(FIRST_NAME_FILTER_XPATH));
+        firstNameFilter.sendKeys(FIRST_NAME);
 
-        // Kiểm tra kết quả lọc
+        // Verify filter results for First Name
         for (WebElement row : rows) {
             if (row.isDisplayed()) {
                 WebElement firstNameCell = row.findElement(By.xpath("./td[3]"));
-                assertTrue(firstNameCell.getText().contains("John"));
+                assertTrue(firstNameCell.getText().contains(FIRST_NAME));
             }
         }
 
-        // Lọc theo Last Name
-        WebElement lastNameFilter = driver.findElement(By.xpath("//input[@placeholder='Last Name']"));
-        lastNameFilter.sendKeys("Doe");
+        // Filter by Last Name
+        WebElement lastNameFilter = driver.findElement(By.xpath(LAST_NAME_FILTER_XPATH));
+        lastNameFilter.sendKeys(LAST_NAME);
 
-        // Kiểm tra kết quả lọc
+        // Verify filter results for Last Name
         for (WebElement row : rows) {
             if (row.isDisplayed()) {
                 WebElement lastNameCell = row.findElement(By.xpath("./td[4]"));
-                assertTrue(lastNameCell.getText().contains("Doe"));
+                assertTrue(lastNameCell.getText().contains(LAST_NAME));
             }
         }
     }

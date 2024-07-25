@@ -16,22 +16,28 @@ public class DynamicDataLoadingTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // XPaths and IDs
+    private static final String USER_INFO_XPATH = "//div[@id='loading']/img";
+    private static final String GET_NEW_USER_BUTTON_ID = "save";
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-        wait = new WebDriverWait(driver, 1000);
+        wait = new WebDriverWait(driver, 10);
         driver.get("https://demo.seleniumeasy.com/dynamic-data-loading-demo.html");
     }
 
     @Test
     public void testLoadNewUser() {
-        WebElement getNewUserButton = driver.findElement(By.id("save"));
+        WebElement getNewUserButton = driver.findElement(By.id(GET_NEW_USER_BUTTON_ID));
         getNewUserButton.click();
-        WebElement userInfo = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='loading']/img")));
+
+        WebElement userInfo = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(USER_INFO_XPATH)));
 
         // Xác minh rằng thông tin người dùng mới đã được hiển thị
-        assertTrue(userInfo.isDisplayed(), "Thông tin người dùng mới không được tải.");
+        assertTrue(userInfo.isDisplayed(), "New user information is not displayed.");
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

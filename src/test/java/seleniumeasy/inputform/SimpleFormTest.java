@@ -17,17 +17,29 @@ public class SimpleFormTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
+
+    // XPaths for elements
+    private static final String MESSAGE_INPUT_XPATH = "//input[@id='user-message']";
+    private static final String SHOW_MESSAGE_BUTTON_XPATH = "//button[contains(text(), 'Show Message')]";
+    private static final String DISPLAY_MESSAGE_XPATH = "//span[@id='display']";
+
+    private static final String VALUE1_INPUT_XPATH = "//input[@id='value1']";
+    private static final String VALUE2_INPUT_XPATH = "//input[@id='value2']";
+    private static final String GET_TOTAL_BUTTON_XPATH = "//button[contains(text(), 'Get Total')]";
+    private static final String DISPLAY_VALUE_XPATH = "//span[@id='displayvalue']";
+
     @Before
     public void setUp(){
         driver = DriverSetup.getDriver();
         wait = new WebDriverWait(driver, 1000);
         driver.get("https://demo.seleniumeasy.com/basic-first-form-demo.html");
     }
+
     @Test
     public void testSingleInputField() {
-        WebElement messageInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='user-message']")));
-        WebElement showMessageButton = driver.findElement(By.xpath("//button[contains(text(), 'Show Message')]"));
-        WebElement displayMessage = driver.findElement(By.xpath("//span[@id='display']"));
+        WebElement messageInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(MESSAGE_INPUT_XPATH)));
+        WebElement showMessageButton = driver.findElement(By.xpath(SHOW_MESSAGE_BUTTON_XPATH));
+        WebElement displayMessage = driver.findElement(By.xpath(DISPLAY_MESSAGE_XPATH));
 
         String inputMessage = "Hello, Selenium!";
 
@@ -41,12 +53,13 @@ public class SimpleFormTest {
 
         assertEquals(inputMessage, displayMessage.getText());
     }
+
     @Test
     public void testTwoInputFields() {
-        WebElement sum1Input = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='value1']")));
-        WebElement sum2Input = driver.findElement(By.xpath("//input[@id='value2']"));
-        WebElement getTotalButton = driver.findElement(By.xpath("//button[contains(text(), 'Get Total')]"));
-        WebElement displayValue = driver.findElement(By.xpath("//span[@id='displayvalue']"));
+        WebElement sum1Input = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(VALUE1_INPUT_XPATH)));
+        WebElement sum2Input = driver.findElement(By.xpath(VALUE2_INPUT_XPATH));
+        WebElement getTotalButton = driver.findElement(By.xpath(GET_TOTAL_BUTTON_XPATH));
+        WebElement displayValue = driver.findElement(By.xpath(DISPLAY_VALUE_XPATH));
 
         String value1 = "10";
         String value2 = "20";
@@ -62,6 +75,7 @@ public class SimpleFormTest {
 
         assertEquals("30", displayValue.getText());
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

@@ -18,100 +18,96 @@ public class BootstrapListboxTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // XPaths and class names
+    private static final String LEFT_LIST_ITEM_XPATH = "//div[@class='dual-list list-left col-md-5']//li[contains(text(),'%s')]";
+    private static final String RIGHT_LIST_ITEM_XPATH = "//div[@class='dual-list list-right col-md-5']//li[contains(text(),'%s')]";
+    private static final String MOVE_RIGHT_BUTTON_XPATH = "//button[@class='btn btn-default btn-sm move-right']";
+    private static final String MOVE_LEFT_BUTTON_XPATH = "//button[@class='btn btn-default btn-sm move-left']";
+    private static final String SELECT_ALL_BUTTON_XPATH = "//div[@class='well text-right']//a[@title='select all']";
+    private static final String ALL_LEFT_ITEMS_XPATH = "//div[@class='dual-list list-left col-md-5']//li";
+    private static final String ALL_RIGHT_ITEMS_XPATH = "//div[@class='dual-list list-right col-md-5']//li";
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-        wait = new WebDriverWait(driver, 1000);
+        wait = new WebDriverWait(driver, 10); // Adjusted timeout to 10 seconds
         driver.get("https://demo.seleniumeasy.com/bootstrap-dual-list-box-demo.html");
     }
+
     @Test
     public void testMoveSingleItemToRight() {
-        // Chọn một mục trong danh sách bên trái
-        WebElement leftItem = driver.findElement(By.xpath("//div[@class='dual-list list-left col-md-5']//li[contains(text(),'bootstrap-duallist')]"));
+        WebElement leftItem = driver.findElement(By.xpath(String.format(LEFT_LIST_ITEM_XPATH, "bootstrap-duallist")));
         leftItem.click();
 
-        // Nhấp vào nút ">"
-        WebElement moveRightButton = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm move-right']"));
+        WebElement moveRightButton = driver.findElement(By.xpath(MOVE_RIGHT_BUTTON_XPATH));
         moveRightButton.click();
 
-        // Xác minh rằng mục đã được chuyển sang danh sách bên phải
-        List<WebElement> rightItems = driver.findElements(By.xpath("//div[@class='dual-list list-right col-md-5']//li[contains(text(),'bootstrap-duallist')]"));
-        assertTrue(rightItems.size() > 0, "Mục không được chuyển sang danh sách bên phải.");
+        List<WebElement> rightItems = driver.findElements(By.xpath(String.format(RIGHT_LIST_ITEM_XPATH, "bootstrap-duallist")));
+        assertTrue(rightItems.size() > 0, "Item was not moved to the right list.");
     }
 
     @Test
     public void testMoveMultipleItemsToRight() {
-        // Chọn nhiều mục trong danh sách bên trái
-        List<WebElement> leftItems = driver.findElements(By.xpath("//div[@class='dual-list list-left col-md-5']//li"));
+        List<WebElement> leftItems = driver.findElements(By.xpath(ALL_LEFT_ITEMS_XPATH));
         leftItems.get(0).click();
         leftItems.get(1).click();
 
-        // Nhấp vào nút ">"
-        WebElement moveRightButton = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm move-right']"));
+        WebElement moveRightButton = driver.findElement(By.xpath(MOVE_RIGHT_BUTTON_XPATH));
         moveRightButton.click();
 
-        // Xác minh rằng các mục đã được chuyển sang danh sách bên phải
-        List<WebElement> rightItems = driver.findElements(By.xpath("//div[@class='dual-list list-right col-md-5']//li"));
-        assertTrue(rightItems.size() > 1, "Các mục không được chuyển sang danh sách bên phải.");
+        List<WebElement> rightItems = driver.findElements(By.xpath(ALL_RIGHT_ITEMS_XPATH));
+        assertTrue(rightItems.size() > 1, "Items were not moved to the right list.");
     }
 
     @Test
     public void testMoveAllItemsToRight() {
-        WebElement clickAllButton = driver.findElement(By.xpath("//div[@class='well text-right']//a[@title='select all']"));
-        clickAllButton.click();
-        // Nhấp vào nút ">"
-        WebElement moveAllRightButton = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm move-right']"));
+        WebElement selectAllButton = driver.findElement(By.xpath(SELECT_ALL_BUTTON_XPATH));
+        selectAllButton.click();
+
+        WebElement moveAllRightButton = driver.findElement(By.xpath(MOVE_RIGHT_BUTTON_XPATH));
         moveAllRightButton.click();
 
-        // Xác minh rằng tất cả các mục đã được chuyển sang danh sách bên phải
-        List<WebElement> leftItems = driver.findElements(By.xpath("//div[@class='dual-list list-left col-md-5']//li"));
-        assertTrue(leftItems.size() == 0, "Không phải tất cả các mục đã được chuyển sang danh sách bên phải.");
+        List<WebElement> leftItems = driver.findElements(By.xpath(ALL_LEFT_ITEMS_XPATH));
+        assertTrue(leftItems.size() == 0, "Not all items were moved to the right list.");
     }
 
     @Test
     public void testMoveSingleItemToLeft() {
-        // Chọn một mục trong danh sách bên phải
         WebElement rightItem = driver.findElement(By.xpath("(//li[normalize-space()='Cras justo odio'])[1]"));
         rightItem.click();
 
-        // Nhấp vào nút "<"
-        WebElement moveLeftButton = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm move-left']"));
+        WebElement moveLeftButton = driver.findElement(By.xpath(MOVE_LEFT_BUTTON_XPATH));
         moveLeftButton.click();
 
-        // Xác minh rằng mục đã được chuyển sang danh sách bên trái
-        List<WebElement> leftItems = driver.findElements(By.xpath("//div[@class='dual-list list-left col-md-5']//li[contains(text(),'Cras justo odio')]"));
-        assertTrue(leftItems.size() > 0, "Mục không được chuyển sang danh sách bên trái.");
+        List<WebElement> leftItems = driver.findElements(By.xpath(String.format(LEFT_LIST_ITEM_XPATH, "Cras justo odio")));
+        assertTrue(leftItems.size() > 0, "Item was not moved to the left list.");
     }
 
     @Test
     public void testMoveMultipleItemsToLeft() {
-        // Chọn nhiều mục trong danh sách bên phải
-        List<WebElement> rightItems = driver.findElements(By.xpath("//div[@class='dual-list list-right col-md-5']//li"));
+        List<WebElement> rightItems = driver.findElements(By.xpath(ALL_RIGHT_ITEMS_XPATH));
         rightItems.get(0).click();
         rightItems.get(1).click();
 
-        // Nhấp vào nút "<"
-        WebElement moveLeftButton = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm move-left']"));
+        WebElement moveLeftButton = driver.findElement(By.xpath(MOVE_LEFT_BUTTON_XPATH));
         moveLeftButton.click();
 
-        // Xác minh rằng các mục đã được chuyển sang danh sách bên trái
-        List<WebElement> leftItems = driver.findElements(By.xpath("//div[@class='dual-list list-left col-md-5']//li"));
-        assertTrue(leftItems.size() > 1, "Các mục không được chuyển sang danh sách bên trái.");
+        List<WebElement> leftItems = driver.findElements(By.xpath(ALL_LEFT_ITEMS_XPATH));
+        assertTrue(leftItems.size() > 1, "Items were not moved to the left list.");
     }
 
     @Test
     public void testMoveAllItemsToLeft() {
+        WebElement selectAllButton = driver.findElement(By.xpath("//div[@class='well']//a[@title='select all']"));
+        selectAllButton.click();
 
-        WebElement clickAllButton = driver.findElement(By.xpath("//div[@class='well']//a[@title='select all']"));
-        clickAllButton.click();
-        // Nhấp vào nút "<<"
-        WebElement moveAllLeftButton = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm move-left']"));
+        WebElement moveAllLeftButton = driver.findElement(By.xpath(MOVE_LEFT_BUTTON_XPATH));
         moveAllLeftButton.click();
 
-        // Xác minh rằng tất cả các mục đã được chuyển sang danh sách bên trái
-        List<WebElement> rightItems = driver.findElements(By.xpath("//div[@class='dual-list list-right col-md-5']//li"));
-        assertTrue(rightItems.size() == 0, "Không phải tất cả các mục đã được chuyển sang danh sách bên trái.");
+        List<WebElement> rightItems = driver.findElements(By.xpath(ALL_RIGHT_ITEMS_XPATH));
+        assertTrue(rightItems.size() == 0, "Not all items were moved to the left list.");
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

@@ -18,6 +18,12 @@ public class WindowPopupModalTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // Define XPaths as constants
+    private static final String TWITTER_BUTTON_XPATH = "//a[contains(text(),'Follow On Twitter')]";
+    private static final String FACEBOOK_BUTTON_XPATH = "//a[contains(text(),'Like us On Facebook')]";
+    private static final String MULTIPLE_BUTTON_XPATH = "//a[contains(text(),'Follow Twitter & Facebook')]";
+    private static final String FOLLOW_ALL_BUTTON_XPATH = "//a[contains(text(),'Follow All')]";
+
     @Before
     public void setUp(){
         driver = DriverSetup.getDriver();
@@ -28,7 +34,7 @@ public class WindowPopupModalTest {
     @Test
     public void testSingleWindowPopup() {
         // Nhấp vào nút "Follow On Twitter"
-        WebElement twitterButton = driver.findElement(By.xpath("//a[contains(text(),'Follow On Twitter')]"));
+        WebElement twitterButton = driver.findElement(By.xpath(TWITTER_BUTTON_XPATH));
         twitterButton.click();
 
         // Chờ cửa sổ mới được mở
@@ -36,13 +42,7 @@ public class WindowPopupModalTest {
         wait.until(ExpectedConditions.numberOfWindowsToBe(2));
 
         // Chuyển sang cửa sổ mới
-        Set<String> allWindowHandles = driver.getWindowHandles();
-        for (String handle : allWindowHandles) {
-            if (!handle.equals(mainWindowHandle)) {
-                driver.switchTo().window(handle);
-                break;
-            }
-        }
+        switchToNewWindow(mainWindowHandle);
 
         // Kiểm tra tiêu đề của cửa sổ mới
         String expectedTitle = "X";
@@ -56,7 +56,7 @@ public class WindowPopupModalTest {
     @Test
     public void testSingleWindowPopupLikeUsOnFacebook() {
         // Nhấp vào nút "Like us On Facebook"
-        WebElement facebookButton = driver.findElement(By.xpath("//a[contains(text(),'Like us On Facebook')]"));
+        WebElement facebookButton = driver.findElement(By.xpath(FACEBOOK_BUTTON_XPATH));
         facebookButton.click();
 
         // Chờ cửa sổ mới được mở
@@ -64,13 +64,7 @@ public class WindowPopupModalTest {
         wait.until(ExpectedConditions.numberOfWindowsToBe(2));
 
         // Chuyển sang cửa sổ mới
-        Set<String> allWindowHandles = driver.getWindowHandles();
-        for (String handle : allWindowHandles) {
-            if (!handle.equals(mainWindowHandle)) {
-                driver.switchTo().window(handle);
-                break;
-            }
-        }
+        switchToNewWindow(mainWindowHandle);
 
         // Kiểm tra tiêu đề của cửa sổ mới
         String expectedTitle = "Facebook";
@@ -85,7 +79,7 @@ public class WindowPopupModalTest {
     @Test
     public void testMultipleWindowPopup() {
         // Nhấp vào nút "Follow Twitter & Facebook"
-        WebElement multipleButton = driver.findElement(By.xpath("//a[contains(text(),'Follow Twitter & Facebook')]"));
+        WebElement multipleButton = driver.findElement(By.xpath(MULTIPLE_BUTTON_XPATH));
         multipleButton.click();
 
         // Chờ các cửa sổ mới được mở
@@ -99,9 +93,8 @@ public class WindowPopupModalTest {
                 driver.switchTo().window(handle);
                 String title = driver.getTitle();
                 assertTrue(title.contains("X") || title.contains("Facebook"), "Tiêu đề cửa sổ nên chứa 'X' hoặc 'Facebook'");
-
+                driver.close();
             }
-            driver.close();
         }
 
         // Chuyển về cửa sổ chính
@@ -111,7 +104,7 @@ public class WindowPopupModalTest {
     @Test
     public void testSingleWindowPopupFollowAll() {
         // Nhấp vào nút "Follow All"
-        WebElement followAllButton = driver.findElement(By.xpath("//a[contains(text(),'Follow All')]"));
+        WebElement followAllButton = driver.findElement(By.xpath(FOLLOW_ALL_BUTTON_XPATH));
         followAllButton.click();
 
         // Chờ các cửa sổ mới được mở
@@ -133,6 +126,17 @@ public class WindowPopupModalTest {
         // Chuyển về cửa sổ chính
         driver.switchTo().window(mainWindowHandle);
     }
+
+    private void switchToNewWindow(String mainWindowHandle) {
+        Set<String> allWindowHandles = driver.getWindowHandles();
+        for (String handle : allWindowHandles) {
+            if (!handle.equals(mainWindowHandle)) {
+                driver.switchTo().window(handle);
+                break;
+            }
+        }
+    }
+
     @After
     public void tearDown() {
         if (driver != null) {

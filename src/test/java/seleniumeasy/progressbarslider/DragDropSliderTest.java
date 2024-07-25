@@ -18,42 +18,49 @@ public class DragDropSliderTest {
     private WebDriverWait wait;
     private Actions actions;
 
+    // Constants for locators and parameters
+    private static final String SLIDER_XPATH = "//div[@class='range']//input[@type='range']";
+    private static final String OUTPUT_ID = "range";
+    private static final int SLIDER_MOVE_PERCENT = 40;
+    private static final int WAIT_TIMEOUT_SECONDS = 10;
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-        wait = new WebDriverWait(driver, 1000);
+        wait = new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS);
+        actions = new Actions(driver);
         driver.get("https://demo.seleniumeasy.com/drag-drop-range-sliders-demo.html");
     }
+
     @Test
     public void testHorizontalSlider() {
         try {
-            WebElement slider = driver.findElement(By.xpath("//div[@class='range']//input[@type='range']"));
-            WebElement output = driver.findElement(By.id("range"));
-            System.out.println("Slider found: " + (slider != null));
-            System.out.println("Output found: " + (output != null));
+            WebElement slider = driver.findElement(By.xpath(SLIDER_XPATH));
+            WebElement output = driver.findElement(By.id(OUTPUT_ID));
             String initialValue = output.getText();
 
-            // Tính toán tọa độ cần kéo
+            // Calculate move offset for the slider
             int sliderWidth = slider.getSize().width;
-            int moveOffset = (sliderWidth * 40 / 100) - sliderWidth / 2; // Ví dụ: di chuyển đến 40% của thanh trượt
+            int moveOffset = (sliderWidth * SLIDER_MOVE_PERCENT / 100) - sliderWidth / 2; // Move to 40% of the slider
 
-            // Xác định tọa độ bắt đầu và kết thúc
+            // Determine start and end coordinates
             int startX = slider.getLocation().getX() + sliderWidth / 2;
             int startY = slider.getLocation().getY();
             int endX = startX + moveOffset;
 
-            // Kéo thanh trượt từ vị trí hiện tại đến vị trí mới
+            // Drag the slider from the current position to the new position
             actions.clickAndHold(slider)
                     .moveByOffset(moveOffset, 0)
                     .release()
                     .perform();
-            // Chờ để giá trị cập nhật
-            wait.until(ExpectedConditions.textToBePresentInElement(output, "40"));
 
-            // Kiểm tra giá trị của thanh trượt sau khi di chuyển
+            // Wait for the value to update
+            wait.until(ExpectedConditions.textToBePresentInElement(output, String.valueOf(SLIDER_MOVE_PERCENT)));
+
+            // Check the slider value after moving
             String newValue = output.getText();
             assertTrue(Integer.parseInt(newValue) >= 1 && Integer.parseInt(newValue) <= 100);
-            assertTrue(!initialValue.equals(newValue)); // Đảm bảo giá trị đã thay đổi
+            assertTrue(!initialValue.equals(newValue)); // Ensure the value has changed
 
         } catch (Exception e) {
             e.printStackTrace();

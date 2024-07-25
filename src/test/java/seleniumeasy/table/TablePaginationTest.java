@@ -17,49 +17,63 @@ public class TablePaginationTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // Constants for locators and values
+    private static final String ROWS_XPATH = "//table[@class='table table-hover']/tbody/tr";
+    private static final String PAGE_LINK_XPATH = "//a[text()='%d']";
+    private static final String PREV_BUTTON_XPATH = "//a[normalize-space()='«']";
+    private static final String NEXT_BUTTON_XPATH = "//a[contains(@class, 'next_link')]";
+    private static final String NEXT_BUTTON_LAST_PAGE_XPATH = "//a[normalize-space()='»']";
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
         wait = new WebDriverWait(driver, 1000);
         driver.get("https://demo.seleniumeasy.com/table-pagination-demo.html");
     }
+
     @Test
     public void testTotalRecords() {
-        List<WebElement> rows = driver.findElements(By.xpath("//table[@class='table table-hover']/tbody/tr"));
+        List<WebElement> rows = driver.findElements(By.xpath(ROWS_XPATH));
         assertEquals(15, rows.size());
     }
 
     @Test
     public void testMaxRecordsPerPage() {
         for (int page = 1; page <= 3; page++) {
-            driver.findElement(By.xpath("//a[text()='" + page + "']")).click();
-            List<WebElement> visibleRows = driver.findElements(By.xpath("//table[@class='table table-hover']/tbody/tr[not(contains(@style, 'display: none'))]"));
+            navigateToPage(page);
+            List<WebElement> visibleRows = driver.findElements(By.xpath(ROWS_XPATH + "[not(contains(@style, 'display: none'))]"));
             assertTrue(visibleRows.size() <= 5);
         }
     }
 
     @Test
     public void testPrevNextButtonsOnSecondPage() {
-        driver.findElement(By.xpath("//a[text()='2']")).click();
-        WebElement prevButton = driver.findElement(By.xpath("//a[normalize-space()='«']"));
-        WebElement nextButton = driver.findElement(By.xpath("//a[contains(@class, 'next_link')]"));
-        assertTrue(prevButton.getAttribute("style").equals("display: block;") );
+        navigateToPage(2);
+        WebElement prevButton = driver.findElement(By.xpath(PREV_BUTTON_XPATH));
+        WebElement nextButton = driver.findElement(By.xpath(NEXT_BUTTON_XPATH));
+        assertTrue(prevButton.getAttribute("style").contains("display: block;"));
         assertFalse(nextButton.getAttribute("style").contains("display: none;"));
     }
 
     @Test
     public void testPrevButtonOnFirstPage() {
-        driver.findElement(By.xpath("//a[text()='1']")).click();
-        WebElement prevButton = driver.findElement(By.xpath("//a[normalize-space()='«']"));
-        assertTrue(prevButton.getAttribute("style").contains("none"));
+        navigateToPage(1);
+        WebElement prevButton = driver.findElement(By.xpath(PREV_BUTTON_XPATH));
+        assertTrue(prevButton.getAttribute("style").contains("display: none;"));
     }
 
     @Test
     public void testNextButtonOnLastPage() {
-        driver.findElement(By.xpath("//a[text()='3']")).click();
-        WebElement nextButton = driver.findElement(By.xpath("//a[normalize-space()='»']"));
-        assertTrue(nextButton.getAttribute("style").contains("none"));
+        navigateToPage(3);
+        WebElement nextButton = driver.findElement(By.xpath(NEXT_BUTTON_LAST_PAGE_XPATH));
+        assertTrue(nextButton.getAttribute("style").contains("display: none;"));
     }
+
+    private void navigateToPage(int pageNumber) {
+        WebElement pageLink = driver.findElement(By.xpath(String.format(PAGE_LINK_XPATH, pageNumber)));
+        pageLink.click();
+    }
+
     @After
     public void tearDown() {
         if (driver != null) {

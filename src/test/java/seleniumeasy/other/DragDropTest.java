@@ -15,33 +15,41 @@ import static org.testng.Assert.assertTrue;
 
 public class DragDropTest {
     private WebDriver driver;
-//    private WebDriverWait wait;
+
+    // XPaths and IDs
+    private static final String ITEM_TO_DRAG_XPATH_TEMPLATE = "//span[contains(text(),'%s')]";
+    private static final String DROP_AREA_ID = "mydropzone";
+    private static final String DROPPED_ITEMS_XPATH = "//div[@id='droppedlist']//span[contains(text(),'Draggable')]";
 
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-//        wait = new WebDriverWait(driver, 1000);
         driver.get("https://demo.seleniumeasy.com/drag-and-drop-demo.html");
     }
+
     @Test
     public void testDragAndDropSingleItem() {
-        WebElement itemToDrag = driver.findElement(By.xpath("//span[contains(text(),'Draggable 1')]"));
-        WebElement dropArea = driver.findElement(By.id("mydropzone"));
+        String itemToDragText = "Draggable 1";
+        WebElement itemToDrag = driver.findElement(By.xpath(String.format(ITEM_TO_DRAG_XPATH_TEMPLATE, itemToDragText)));
+        WebElement dropArea = driver.findElement(By.id(DROP_AREA_ID));
 
         // Kéo và thả phần tử
         Actions actions = new Actions(driver);
         actions.dragAndDrop(itemToDrag, dropArea).perform();
 
         // Xác minh rằng phần tử đã được thả vào khu vực thả
-        List<WebElement> droppedItems = driver.findElements(By.xpath("//div[@id='droppedlist']//span[contains(text(),'Draggable 1')]"));
-        assertTrue(droppedItems.size() > 0, "Phần tử không được thả vào khu vực thả.");
+        List<WebElement> droppedItems = driver.findElements(By.xpath(DROPPED_ITEMS_XPATH + "[contains(text(),'" + itemToDragText + "')]"));
+        assertTrue(droppedItems.size() > 0, "Item was not dropped into the drop area.");
     }
 
     @Test
     public void testDragAndDropMultipleItems() {
-        WebElement itemToDrag1 = driver.findElement(By.xpath("//span[contains(text(),'Draggable 1')]"));
-        WebElement itemToDrag2 = driver.findElement(By.xpath("//span[contains(text(),'Draggable 2')]"));
-        WebElement dropArea = driver.findElement(By.id("mydropzone"));
+        String itemToDrag1Text = "Draggable 1";
+        String itemToDrag2Text = "Draggable 2";
+
+        WebElement itemToDrag1 = driver.findElement(By.xpath(String.format(ITEM_TO_DRAG_XPATH_TEMPLATE, itemToDrag1Text)));
+        WebElement itemToDrag2 = driver.findElement(By.xpath(String.format(ITEM_TO_DRAG_XPATH_TEMPLATE, itemToDrag2Text)));
+        WebElement dropArea = driver.findElement(By.id(DROP_AREA_ID));
 
         // Kéo và thả các phần tử
         Actions actions = new Actions(driver);
@@ -49,9 +57,10 @@ public class DragDropTest {
         actions.dragAndDrop(itemToDrag2, dropArea).perform();
 
         // Xác minh rằng các phần tử đã được thả vào khu vực thả
-        List<WebElement> droppedItems = driver.findElements(By.xpath("//div[@id='droppedlist']//span[contains(text(),'Draggable')]"));
-        assertTrue(droppedItems.size() > 1, "Không phải tất cả các phần tử được thả vào khu vực thả.");
+        List<WebElement> droppedItems = driver.findElements(By.xpath(DROPPED_ITEMS_XPATH));
+        assertTrue(droppedItems.size() > 1, "Not all items were dropped into the drop area.");
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

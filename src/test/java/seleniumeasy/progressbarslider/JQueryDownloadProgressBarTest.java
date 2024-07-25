@@ -16,51 +16,66 @@ public class JQueryDownloadProgressBarTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // Constants for locators and parameters
+    private static final String DOWNLOAD_BUTTON_ID = "downloadButton";
+    private static final String PROGRESS_LABEL_CLASS = "progress-label";
+    private static final String CLOSE_BUTTON_XPATH = "//button[text()='Close']";
+    private static final String DIALOG_CLASS = "ui-dialog";
+    private static final String COMPLETE_TEXT = "Complete!";
+    private static final int WAIT_TIMEOUT_SECONDS = 10;
+
     @Before
-    public void setUp(){
+    public void setUp() {
         driver = DriverSetup.getDriver();
-        wait = new WebDriverWait(driver, 1000);
+        wait = new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS);
         driver.get("https://demo.seleniumeasy.com/jquery-download-progress-bar-demo.html");
     }
 
     @Test
     public void testStartDownload() {
-        // Nhấp vào nút "Start Download"
-        WebElement startDownloadButton = driver.findElement(By.id("downloadButton"));
+        // Click the "Start Download" button
+        WebElement startDownloadButton = driver.findElement(By.id(DOWNLOAD_BUTTON_ID));
         startDownloadButton.click();
 
-        // Kiểm tra thanh tiến trình có xuất hiện
-        WebElement progressBar = driver.findElement(By.className("progress-label"));
+        // Verify that the progress bar is displayed
+        WebElement progressBar = driver.findElement(By.className(PROGRESS_LABEL_CLASS));
         wait.until(ExpectedConditions.visibilityOf(progressBar));
         assertTrue(progressBar.isDisplayed());
     }
 
     @Test
     public void testProgressCompletion() {
-        WebElement startDownloadButton = driver.findElement(By.id("downloadButton"));
+        // Start download
+        WebElement startDownloadButton = driver.findElement(By.id(DOWNLOAD_BUTTON_ID));
         startDownloadButton.click();
-        WebElement progressBar = driver.findElement(By.className("progress-label"));
-        wait.until(ExpectedConditions.textToBePresentInElement(progressBar, "Complete!"));
 
-        // Kiểm tra kết quả
-        assertTrue(progressBar.getText().contains("Complete!"));
+        // Wait for the progress to complete
+        WebElement progressBar = driver.findElement(By.className(PROGRESS_LABEL_CLASS));
+        wait.until(ExpectedConditions.textToBePresentInElement(progressBar, COMPLETE_TEXT));
+
+        // Verify that the progress bar text indicates completion
+        assertTrue(progressBar.getText().contains(COMPLETE_TEXT));
     }
 
     @Test
     public void testCloseDialogAfterCompletion() {
-        WebElement startDownloadButton = driver.findElement(By.id("downloadButton"));
+        // Start download
+        WebElement startDownloadButton = driver.findElement(By.id(DOWNLOAD_BUTTON_ID));
         startDownloadButton.click();
-        WebElement progressBar = driver.findElement(By.className("progress-label"));
-        wait.until(ExpectedConditions.textToBePresentInElement(progressBar, "Complete!"));
 
-        // Nhấp vào nút "Close"
-        WebElement closeButton = driver.findElement(By.xpath("//button[text()='Close']"));
+        // Wait for the progress to complete
+        WebElement progressBar = driver.findElement(By.className(PROGRESS_LABEL_CLASS));
+        wait.until(ExpectedConditions.textToBePresentInElement(progressBar, COMPLETE_TEXT));
+
+        // Click the "Close" button
+        WebElement closeButton = driver.findElement(By.xpath(CLOSE_BUTTON_XPATH));
         closeButton.click();
 
-        // Kiểm tra hộp thoại đã đóng
-        boolean isDialogClosed = wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("ui-dialog")));
+        // Verify that the dialog is closed
+        boolean isDialogClosed = wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(DIALOG_CLASS)));
         assertTrue(isDialogClosed);
     }
+
     @After
     public void tearDown() {
         if (driver != null) {

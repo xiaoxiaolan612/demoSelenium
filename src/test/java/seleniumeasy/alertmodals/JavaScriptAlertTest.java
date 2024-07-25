@@ -16,6 +16,13 @@ public class JavaScriptAlertTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    // Define XPaths and other locators as constants
+    private static final String ALERT_BUTTON_XPATH = "//button[contains(text(),'Click me!')]";
+    private static final String CONFIRM_BUTTON_XPATH = "(//button[@class='btn btn-default btn-lg'][normalize-space()='Click me!'])[1]";
+    private static final String PROMPT_BUTTON_XPATH = "//button[contains(text(),'Click for Prompt Box')]";
+    private static final String CONFIRM_RESULT_ID = "confirm-demo";
+    private static final String PROMPT_RESULT_ID = "prompt-demo";
+
     @Before
     public void setUp(){
         driver = DriverSetup.getDriver();
@@ -23,10 +30,9 @@ public class JavaScriptAlertTest {
         driver.get("https://demo.seleniumeasy.com/javascript-alert-box-demo.html");
     }
 
-
     @Test
     public void testAlertBox() {
-        WebElement alertButton = driver.findElement(By.xpath("//button[contains(text(),'Click me!')]"));
+        WebElement alertButton = driver.findElement(By.xpath(ALERT_BUTTON_XPATH));
         alertButton.click();
 
         Alert alert = driver.switchTo().alert();
@@ -38,7 +44,7 @@ public class JavaScriptAlertTest {
 
     @Test
     public void testConfirmBox() {
-        WebElement confirmButton = driver.findElement(By.xpath("(//button[@class='btn btn-default btn-lg'][normalize-space()='Click me!'])[1]"));
+        WebElement confirmButton = driver.findElement(By.xpath(CONFIRM_BUTTON_XPATH));
         confirmButton.click();
 
         Alert confirmAlert = driver.switchTo().alert();
@@ -46,7 +52,7 @@ public class JavaScriptAlertTest {
         assertEquals(confirmMessage, "Press a button!");
 
         confirmAlert.accept();
-        WebElement resultMessage = driver.findElement(By.id("confirm-demo"));
+        WebElement resultMessage = driver.findElement(By.id(CONFIRM_RESULT_ID));
         assertEquals(resultMessage.getText(), "You pressed OK!");
 
         confirmButton.click();
@@ -58,8 +64,7 @@ public class JavaScriptAlertTest {
 
     @Test
     public void testPromptBox() {
-        WebElement promptButton = driver.findElement(By.xpath("//button[contains(text(),'Click for Prompt Box')]"));
-
+        WebElement promptButton = driver.findElement(By.xpath(PROMPT_BUTTON_XPATH));
         promptButton.click();
 
         Alert promptAlert = driver.switchTo().alert();
@@ -68,7 +73,7 @@ public class JavaScriptAlertTest {
 
         promptAlert.sendKeys("Test User");
         promptAlert.accept();
-        WebElement resultMessage = driver.findElement(By.id("prompt-demo"));
+        WebElement resultMessage = driver.findElement(By.id(PROMPT_RESULT_ID));
         assertEquals(resultMessage.getText(), "You have entered 'Test User' !");
 
         promptButton.click();
@@ -77,7 +82,6 @@ public class JavaScriptAlertTest {
         promptAlert.dismiss();
         assertEquals(resultMessage.getText(), "You have entered 'Test User' !");
     }
-
 
     @After
     public void tearDown() {
